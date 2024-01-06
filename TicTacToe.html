@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #282c35;
+      color: #fff;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .flex-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .flex-row {
+      display: flex;
+      flex-direction: row;
+      text-align: center;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .flex-container > div.flex-row > div {
+      background-color: #61dafb;
+      width: 100px;
+      height: 100px;
+      margin: 5px;
+      text-align: center;
+      font-size: 36px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+      color: #282c35;
+      font-weight: bold;
+    }
+
+    .flex-container > div.flex-row > div.winner-animation {
+      animation: scaleUp 0.5s ease;
+      background-color: #4caf50;
+      color: #fff;
+    }
+
+    h1 {
+      color: #61dafb;
+      text-align: center;
+      text-transform: uppercase;
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    @keyframes scaleUp {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Tic Tac Toe</h1>
+
+<audio id="winSound" src="applause.wav"></audio>
+<audio id="clickSound" src="MouseClick.mp3"></audio>
+
+<div class="flex-container">
+  <div class="flex-row">
+    <div class="row" onclick="handleClick(this)"></div>
+    <div class="row" onclick="handleClick(this)"></div>
+    <div class="row" onclick="handleClick(this)"></div>
+  </div>
+  <div class="flex-row">
+    <div class="row" onclick="handleClick(this)"></div>
+    <div class="row" onclick="handleClick(this)"></div>
+    <div class="row" onclick="handleClick(this)"></div>
+  </div>
+  <div class="flex-row">
+    <div class="row" onclick="handleClick(this)"></div>
+    <div class="row" onclick="handleClick(this)"></div>
+    <div class="row" onclick="handleClick(this)"></div>
+  </div>
+</div>
+
+<script>
+  var currentPlayerIndex = 0;
+  var players = ['X', 'O'];
+
+  function currentPlayer() {
+    return players[currentPlayerIndex];
+  }
+
+  function switchPlayer() {
+    currentPlayerIndex = 1 - currentPlayerIndex;
+  }
+
+  function playClickSound() {
+    var clickSound = document.getElementById('clickSound');
+    clickSound.play();
+  }
+
+  function playWinSound() {
+    var winSound = document.getElementById('winSound');
+    winSound.play();
+  }
+
+  function handleClick(cell) {
+    var x = cell.innerHTML;
+    if (!x) {
+      cell.innerHTML = currentPlayer();
+      setTimeout(function(){
+      playClickSound();
+      if (checkWinner()) {
+        cell.classList.add('winner-animation');
+        alert('Winner is ' + currentPlayer());
+        playWinSound();
+        reset();
+      }
+      else{
+      switchPlayer();
+      
+      }
+    }
+  ,100);
+    }
+  }
+
+  function checkWinner() {
+    var arr = [['', '', ''], ['', '', ''], ['', '', '']];
+    var cells = document.querySelectorAll('.row');
+    var cellIndexes = 0;
+    for (var i = 0; i < 3; i++) {
+      for (var j = 0; j < 3; j++) {
+        arr[i][j] = cells[cellIndexes].innerHTML;
+        cellIndexes++;
+      }
+    }
+
+    for (var i = 0; i < 3; i++) {
+      if (arr[i][0] == arr[i][1] && arr[i][1] == arr[i][2] && arr[i][0] != '') {
+        return true;
+      }
+    }
+
+    for (var j = 0; j < 3; j++) {
+      if (arr[0][j] == arr[1][j] && arr[0][j] == arr[2][j] && arr[0][j] != '') {
+        return true;
+      }
+    }
+
+    if (arr[0][0] == arr[1][1] && arr[0][0] == arr[2][2] && arr[2][2] != '') {
+      return true;
+    }
+
+    if (arr[0][2] == arr[1][1] && arr[1][1] == arr[2][0] && arr[1][1] != '') {
+      return true;
+    }
+
+    return false;
+  }
+
+  function reset() {
+    var cells = document.querySelectorAll('.row');
+    cells.forEach((cell) => {
+      cell.classList.remove('winner-animation');
+      cell.innerHTML='';
+    });
+    alert('Game is reset');
+  }
+</script>
+
+</body>
+</html>
